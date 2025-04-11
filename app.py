@@ -60,7 +60,13 @@ def show_shap_explanation(model, X_sample):
 
         shap.initjs()
         fig, ax = plt.subplots()
-        shap.summary_plot(shap_values, X_sample, plot_type="bar", show=False)
+        shap.summary_plot(
+            shap_values, 
+            X_sample, 
+            class_names=['Google Search', 'Google Drive', 'Google Music', 'YouTube', 'Google Docs'],
+            plot_type="bar", 
+            show=False
+        )
         st.pyplot(fig)
     except Exception as e:
         st.error(f"SHAP failed: {e}")
