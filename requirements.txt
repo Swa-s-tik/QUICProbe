@@ -6,3 +6,6 @@ lightgbm
 joblib
 pandas
 matplotlib
+shap
+lime
+ipython
