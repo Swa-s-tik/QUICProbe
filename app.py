@@ -74,21 +74,35 @@ def show_shap_explanation(model, X_sample):
 def show_lime_explanation(model, X_sample):
     st.subheader("LIME Explanation")
     try:
+        class_names = ['Google Search', 'Google Drive', 'Google Music', 'YouTube', 'Google Docs']
+
+        # Get prediction for the instance
+        instance = X_sample.iloc[0]
+        prediction = model.predict([instance])[0]
+
         explainer = LimeTabularExplainer(
             training_data=np.array(X_sample),
             mode='classification',
             feature_names=['relativetime', 'packetsize', 'packetdirection'],
-            class_names=['Google Search', 'Google Drive', 'Google Music', 'YouTube', 'Google Docs'],
+            class_names=class_names,
             discretize_continuous=True
         )
+        
         exp = explainer.explain_instance(
-            data_row=X_sample.iloc[0],
-            predict_fn=model.predict_proba
+            data_row=instance,
+            predict_fn=model.predict_proba,
+            labels=[prediction]  # <-- Target the correct predicted label
         )
-        fig = exp.as_pyplot_figure()
+
+        # Show explanation for predicted class
+        fig = exp.as_pyplot_figure(label=prediction)
         st.pyplot(fig)
+
+        st.markdown(f"**Predicted Class:** {class_names[prediction]}")
+        
     except Exception as e:
         st.error(f"LIME failed: {e}")
+
 
 def main():
     st.title('Traffic Classifier App')
